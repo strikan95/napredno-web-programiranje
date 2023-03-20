@@ -1,0 +1,10 @@
+INSERT INTO sqlite_sequence (name, seq) VALUES ('genres', 25);
+INSERT INTO sqlite_sequence (name, seq) VALUES ('media_types', 5);
+INSERT INTO sqlite_sequence (name, seq) VALUES ('artists', 275);
+INSERT INTO sqlite_sequence (name, seq) VALUES ('albums', 347);
+INSERT INTO sqlite_sequence (name, seq) VALUES ('tracks', 3503);
+INSERT INTO sqlite_sequence (name, seq) VALUES ('employees', 8);
+INSERT INTO sqlite_sequence (name, seq) VALUES ('customers', 59);
+INSERT INTO sqlite_sequence (name, seq) VALUES ('invoices', 412);
+INSERT INTO sqlite_sequence (name, seq) VALUES ('invoice_items', 2240);
+INSERT INTO sqlite_sequence (name, seq) VALUES ('playlists', 18);
