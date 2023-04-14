@@ -1,11 +1,6 @@
-* text=auto eol=lf
-
-*.blade.php diff=html
-*.css diff=css
-*.html diff=html
-*.md diff=markdown
-*.php diff=php
-
-/.github export-ignore
-CHANGELOG.md export-ignore
-.styleci.yml export-ignore
+docker-healthcheck text eol=lf
+*.sh text eol=lf
+docker/*-base linguist-language=Dockerfile
+docker/*-prod linguist-language=Dockerfile
+docker/*-dev linguist-language=Dockerfile
+Makefile linguist-vendored

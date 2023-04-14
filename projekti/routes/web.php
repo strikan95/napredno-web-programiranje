@@ -45,9 +45,14 @@ Route::post('/project', [ProjectController::class, 'store'])
 // ADD TASK
 Route::post('/project/{project:id}/task', [ProjectTaskController::class, 'store'])
     ->middleware(['auth']);
+
+// EDIT TASK
 Route::put('/project/{project:id}/task/{task:id}', [ProjectTaskController::class, 'update'])
     ->middleware(['auth']);
 
+// DELETE TASK
+Route::delete('/project/{project:id}/task/{task:id}', [ProjectTaskController::class, 'delete'])
+    ->middleware(['auth']);
 
 
 // --------------------------------- CHANGE PROFILE ROUTES ---------------------------------
