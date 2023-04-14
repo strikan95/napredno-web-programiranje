@@ -4,7 +4,7 @@
     </h1>
     <ol class="divide-y">
         <li class="mb-3 pt-4">
-            <a href="{{route('project.show', $project)}}">
+            <a href="{{route('user.show', $project->leader)}}">
                 <div class="hover:text-blue-700">
                     {{ $project->leader->name }}
                 </div>

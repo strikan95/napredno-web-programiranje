@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\CollaboratorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectCollaboratorController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectTaskController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,42 +20,45 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// --------------------------------- HOME PAGE ---------------------------------
+// --------------------------------- HOME ---------------------------------
 Route::get('/', function () {
     return view('welcome');
 });
 
-// --------------------------------- DASHBOARD PAGE ---------------------------------
-Route::get('dashboard', DashboardController::class)
+// --------------------------------- DASHBOARD ---------------------------------
+Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth'])
     ->name('dashboard');
 
-// --------------------------------- SINGLE PROJECT PAGE ---------------------------------
-Route::get('project/{project:id}', [ProjectController::class, 'show'])
-    ->middleware(['auth'])
-    ->name('project.show');
-
-// --------------------------------- CREATE PROJECT PAGE ---------------------------------
-Route::get('project/create', [ProjectController::class, 'create'])
-    ->middleware(['auth'])
-    ->name('project.create');
-
-// STORE
-Route::post('/project', [ProjectController::class, 'store'])
-    ->middleware(['auth'])
-    ->name('project.store');
-
-// ADD TASK
-Route::post('/project/{project:id}/task', [ProjectTaskController::class, 'store'])
+// --------------------------------- PROJECT CRUD ROUTES ---------------------------------
+Route::resource('project', ProjectController::class)
     ->middleware(['auth']);
 
-// EDIT TASK
-Route::put('/project/{project:id}/task/{task:id}', [ProjectTaskController::class, 'update'])
+// --------------------------------- PROJECT-TASKS CRUD ROUTES ---------------------------------
+Route::resource('project.task', ProjectTaskController::class)
+    ->only(['store', 'update', 'destroy'])
     ->middleware(['auth']);
 
-// DELETE TASK
-Route::delete('/project/{project:id}/task/{task:id}', [ProjectTaskController::class, 'delete'])
+Route::resource('project.collaborator', ProjectCollaboratorController::class)
+    ->only(['store', 'destroy'])
     ->middleware(['auth']);
+
+Route::resource('user', UserController::class)
+    ->only(['index', 'show'])
+    ->middleware(['auth']);
+
+Route::get('/candidates/project/{project}', [UserController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('project.candidates.index');
+
+// --------------------------------- PROJECT COLLABORATORS ---------------------------------
+// ADD COLLABORATOR
+/*Route::post('/project/{project:id}/collaborator', [ProjectCollaboratorController::class, 'add'])
+    ->middleware(['auth']);*/
+
+// REMOVE COLLABORATOR
+/*Route::delete('/project/{project:id}/collaborator/{collaboratorId}', [ProjectCollaboratorController::class, 'remove'])
+    ->middleware(['auth']);*/
 
 
 // --------------------------------- CHANGE PROFILE ROUTES ---------------------------------

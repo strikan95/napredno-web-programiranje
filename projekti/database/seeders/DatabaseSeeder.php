@@ -43,6 +43,9 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // Add random unconnected users
+        $users = User::factory(5)->create();
+
 /*        $collaborators = User::factory(5)->create()
             ->each(function ($user) {
             Project::factory(random_int(1,5))

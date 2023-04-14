@@ -1,25 +1,23 @@
-<x-modal name="add-task-modal" focusable>
-    <form method="post" action="{{ route('project.task.store', $project) }}" class="p-6">
+<x-modal name="add-collaborator-modal-{{ $user->id }}" focusable>
+    <form method="post" action="{{ route('project.collaborator.store', $project) }}" class="p-6">
         @csrf
         @method('post')
 
         <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Add a task.') }}
+            {{ __('Add a collaborator.') }}
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __('Youre adding a task to the project here.') }}
+            {{ __('Youre adding '). $user->name . __(' as collaborator to the project.') }}
         </p>
 
         <div class="mt-6">
-            <x-input-label for="text" value="{{ __('Task Description') }}" class="sr-only" />
-
             <x-text-input
-                id="description"
-                name="description"
+                id="collaborator_id"
+                name="collaborator_id"
                 type="text"
-                class="mt-1 block w-3/4"
-                placeholder="{{ __('Write task description here...') }}"
+                class="mt-1 hidden w-3/4"
+                value="{{ $user->id }}"
             />
         </div>
 
@@ -29,7 +27,7 @@
             </x-secondary-button>
 
             <x-danger-button class="ml-3">
-                {{ __('Save Task') }}
+                {{ __('Add Collaborator') }}
             </x-danger-button>
         </div>
     </form>

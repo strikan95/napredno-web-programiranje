@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('A Project') }}
             </h2>
-            <a class="ml-auto hover:text-blue-700 cursor-pointer">
+            <a href="{{ route('project.edit', $project) }}" class="ml-auto hover:text-blue-700 cursor-pointer">
                 Edit Project
             </a>
         </div>

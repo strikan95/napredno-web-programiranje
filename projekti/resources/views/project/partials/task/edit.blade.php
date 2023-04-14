@@ -1,7 +1,7 @@
 <x-modal name="edit-task-modal-{{ $task->id }}" focusable>
-    <form method="post" action="/project/{{ $project->id }}/task/{{ $task->id }}" class="p-6">
+    <form method="post" action="{{ route('project.task.update', [ $project, $task ]) }}" class="p-6">
         @csrf
-        @method('put')
+        @method('patch')
 
         <h2 class="text-lg font-medium text-gray-900">
             {{ __('Edit a task.') }}
