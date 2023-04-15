@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProjectRequest;
-use App\Http\Requests\UpdateProjectRequest;
+use App\Http\Requests\Project\StoreProjectRequest;
+use App\Http\Requests\Project\UpdateProjectRequest;
 use App\Models\Project;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\Access\Response;
 
 class ProjectController extends Controller
 {
@@ -34,12 +34,15 @@ class ProjectController extends Controller
         );
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     public function store(StoreProjectRequest $request)
     {
-        $user = auth()->id();
+        $this->authorize('create', Project::class);
 
         $project = new Project();
-        $project->project_leader_id = $user;
+        $project->project_leader_id = auth()->id();
         $project->title = $request->title;
         $project->description = $request->description;
         $project->save();
@@ -47,8 +50,13 @@ class ProjectController extends Controller
         return redirect(route('project.show', $project));
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     public function update(UpdateProjectRequest $request, Project $project)
     {
+        $this->authorize('update', $project);
+
         $project->title = $request->title;
         $project->description = $request->description;
         $project->save();
@@ -56,10 +64,14 @@ class ProjectController extends Controller
         return redirect(route('project.show', $project));
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     public function destroy(Project $project)
     {
-        $project->delete();
+        $this->authorize('destroy',  $project);
 
+        $project->delete();
         return redirect(route('dashboard'));
     }
 }

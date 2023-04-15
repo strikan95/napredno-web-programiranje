@@ -20,4 +20,3 @@ exec entrypoint-base "${@}"
 # Start node
 echo "Starting node server"
 npm run build
-

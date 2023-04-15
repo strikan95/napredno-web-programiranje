@@ -18,67 +18,89 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // --------------------------------- Generate users ---------------------------------
-        // Test user
-        $user = User::factory()->create(
+        // Test user 1
+        $testUser1 = User::factory()->create(
             [
-                'name' => 'strikan',
-                'email' => 'strikan@mail.com',
+                'name' => 'User 1',
+                'email' => 'usr1@mail.com',
                 'email_verified_at' => now(),
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
                 'remember_token' => Str::random(10),
             ]
         );
-        $project = Project::factory(5)->create(['project_leader_id' => $user->id]);
 
-        $collaborators = User::factory(5)->create();
-        foreach ($collaborators as $collaborator)
-        {
-            $project[0]->collaborators()->attach($collaborator->id);
-        }
-
-        Task::factory(10)->create(
+        // Test user 2
+        $testUser2 = User::factory()->create(
             [
-                'user_id' => $collaborators[random_int(0, 4)]->id,
-                'project_id' => $project[0]->id
+                'name' => 'User 2',
+                'email' => 'usr2@mail.com',
+                'email_verified_at' => now(),
+                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+                'remember_token' => Str::random(10),
             ]
         );
 
-        // Add random unconnected users
-        $users = User::factory(5)->create();
-
-/*        $collaborators = User::factory(5)->create()
-            ->each(function ($user) {
-            Project::factory(random_int(1,5))
-                ->create(
-                    ['project_leader_id' => $user->id]
-                );
-        });*/
+        // Other Users
+        $otherUsers = User::factory(10)->create();
 
 
-        // Generate other random users
-        //$users = User::factory(15)->create();
-
-
-        //  --------------------------------- Test user projects  ---------------------------------
-        // Generate and assign projects to test user
-/*        $tProjects = Project::factory(3)->create();
-        foreach ($tProjects as $project)
+        // --------------------------------- Generate and seed test users projects ---------------------------------
+        // Test user 1 projects
+        $testUser1Projects = Project::factory(2)->create(['project_leader_id' => $testUser1->id]);
+        foreach ($testUser1Projects as $project)
         {
-            $project->leader()->associate($tUser);
-        }*/
+            $this->seedProject($project, $testUser1, $otherUsers->toArray());
+        }
 
-        // Generate project with collaborators for test user
-/*        $tProject = Project::factory()->create(['project_leader_id' => $tUser->id, 'title'=>'Project with collaborators']);
-        foreach ($users as $user)
+
+        $testUser2Projects = Project::factory(2)->create(['project_leader_id' => $testUser2->id]);
+        foreach ($testUser2Projects as $project)
         {
+            $this->seedProject($project, $testUser2, array_merge($otherUsers->toArray(), [$testUser1, $testUser2]));
+        }
 
-        }*/
+        // --------------------------------- Generate and seed other users projects ---------------------------------
 
-        //  --------------------------------- Projects for other users ---------------------------------
-        // Assign random n of projects to each other user
-/*        foreach ($users as $user)
+
+        foreach ($otherUsers as $otherUser)
         {
-            Project::factory(random_int(1, 5))->create(['project_leader_id' => $user->id]);
-        }*/
+            $othProjects = Project::factory(2)->create(['project_leader_id' => $otherUser->id]);
+            foreach ($othProjects as $othProject)
+            {
+                $this->seedProject($othProject, $otherUser, array_merge($otherUsers->toArray(), [$testUser1, $testUser2]));
+            }
+        }
+    }
+
+    public function seedProject($project, $owner, $users)
+    {
+        $nUsrs = random_int(0, 3);
+
+        if($nUsrs < 2) return;
+
+        // Take random n users
+        $userSample = array_diff(
+            array_rand(
+                $users,
+                random_int(2, 4)
+            ),
+            [$owner]
+        );
+
+        foreach ($userSample as $index)
+        {
+            $collaborator = $users[$index];
+
+            // Assign each user to the project as collaborator
+            $project->collaborators()->attach($collaborator['id']);
+
+            // Assign random n tasks to the project for the user
+            Task::factory(random_int(0, 3))->create(
+                [
+                    'user_id' => $collaborator['id'],
+                    'project_id' => $project->id
+                ]
+            );
+        }
     }
 }
