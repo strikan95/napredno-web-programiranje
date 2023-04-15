@@ -31,5 +31,12 @@ Username: usr1@mail.com
 Password: password
 ```
 
+## Slike
+![Dashboard](https://github.com/strikan95/napredno-web-programiranje/blob/master/projekti/slike/dasboard.png?raw=true)
+![Project Page](https://github.com/strikan95/napredno-web-programiranje/blob/master/projekti/slike/project_page.png?raw=true)
+![Create Project Page](https://github.com/strikan95/napredno-web-programiranje/blob/master/projekti/slike/create_project_page.png?raw=true)
+![Edit Project Page](https://github.com/strikan95/napredno-web-programiranje/blob/master/projekti/slike/edit_project_page.png?raw=true)
+![Add Collaborators Page](https://github.com/strikan95/napredno-web-programiranje/blob/master/projekti/slike/add_collaborator_page.png?raw=true)
+
 ## Autor
 Juraj Buljević 
