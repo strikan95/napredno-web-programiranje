@@ -39,6 +39,34 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
+        <!-- User type -->
+        <div class="mt-4">
+            <x-input-label for="user_type" :value="__('Select User Type')" />
+
+            <div class="items-center w-full text-sm font-medium text-gray-900 bg-white sm:flex dark:bg-gray-700 dark:text-white space-x-8">
+                <div class="flex items-center pl-3">
+                    <input id="student-radio"
+                           checked="checked"
+                           type="radio"
+                           value="student"
+                           name="userType"
+                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                    <label for="student-radio"
+                           class="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Student</label>
+                </div>
+
+                <div class="flex items-center pl-3">
+                    <input id="professor-radio"
+                           type="radio"
+                           value="professor"
+                           name="userType"
+                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                    <label for="professor-radio"
+                           class="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Professor</label>
+                </div>
+            </div>
+        </div>
+
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
                 {{ __('Already registered?') }}

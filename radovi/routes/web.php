@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\CollaboratorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -26,40 +28,31 @@ Route::get('/', function () {
 });
 
 // --------------------------------- DASHBOARD ---------------------------------
-Route::get('/dashboard', DashboardController::class)
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.dashboard');
+
+Route::get('/student/dashboard', function () { return view('student.dashboard'); })
+    ->middleware(['auth', 'role:student', 'approved'])
+    ->name('student.dashboard');
+
+Route::get('/professor/dashboard', function () { return view('professor.dashboard'); })
+    ->middleware(['auth', 'role:professor', 'approved'])
+    ->name('professor.dashboard');
+
+Route::get('/dashboard', function () { return view('dashboard'); })
     ->middleware(['auth'])
     ->name('dashboard');
 
-// --------------------------------- PROJECT CRUD ROUTES ---------------------------------
-Route::resource('project', ProjectController::class)
-    ->middleware(['auth']);
+Route::post('/admin/approve/user/{user:id}', [ApprovalController::class, 'approve'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.approve');
 
-// --------------------------------- PROJECT-TASKS CRUD ROUTES ---------------------------------
-Route::resource('project.task', ProjectTaskController::class)
-    ->only(['store', 'update', 'destroy'])
-    ->middleware(['auth']);
+Route::post('/admin/approve/user/{user:id}/role/{role:id}', [ApprovalController::class, 'changeRole'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.user.role');
 
-Route::resource('project.collaborator', ProjectCollaboratorController::class)
-    ->only(['store', 'destroy'])
-    ->middleware(['auth']);
-
-Route::resource('user', UserController::class)
-    ->only(['index', 'show'])
-    ->middleware(['auth']);
-
-Route::get('/candidates/project/{project}', [UserController::class, 'index'])
-    ->middleware(['auth'])
-    ->name('project.candidates.index');
-
-// --------------------------------- PROJECT COLLABORATORS ---------------------------------
-// ADD COLLABORATOR
-/*Route::post('/project/{project:id}/collaborator', [ProjectCollaboratorController::class, 'add'])
-    ->middleware(['auth']);*/
-
-// REMOVE COLLABORATOR
-/*Route::delete('/project/{project:id}/collaborator/{collaboratorId}', [ProjectCollaboratorController::class, 'remove'])
-    ->middleware(['auth']);*/
-
+Route::get('/approval', function () { return 'not approved'; })->middleware(['auth'])->name('user.approval');
 
 // --------------------------------- CHANGE PROFILE ROUTES ---------------------------------
 Route::middleware('auth')->group(function () {

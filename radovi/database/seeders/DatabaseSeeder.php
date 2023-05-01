@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Project;
+use App\Models\Role;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -17,90 +18,53 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // --------------------------------- Generate roles ---------------------------------
+        $adminRole = Role::factory()->create(['name' => 'admin']);
+        $studentRole = Role::factory()->create(['name' => 'student']);
+        $professorRole = Role::factory()->create(['name' => 'professor']);
+
         // --------------------------------- Generate users ---------------------------------
         // Test user 1
-        $testUser1 = User::factory()->create(
+        /** @var User $professorUser */
+        $adminUser = User::factory()->create(
             [
-                'name' => 'User 1',
-                'email' => 'usr1@mail.com',
+                'name' => 'Admin',
+                'email' => 'admin@mail.com',
+                'approved_at' => now(),
                 'email_verified_at' => now(),
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
                 'remember_token' => Str::random(10),
             ]
         );
+        $adminUser->roles()->attach($adminRole);
 
-        // Test user 2
-        $testUser2 = User::factory()->create(
+        // Test user 1
+        /** @var User $professorUser */
+        $studentUser = User::factory()->create(
             [
-                'name' => 'User 2',
-                'email' => 'usr2@mail.com',
+                'type' => 'student',
+                'name' => 'Student',
+                'email' => 'student@mail.com',
+                'approved_at' => null,
                 'email_verified_at' => now(),
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
                 'remember_token' => Str::random(10),
             ]
         );
+        $studentUser->roles()->attach($studentRole);
 
-        // Other Users
-        $otherUsers = User::factory(10)->create();
-
-
-        // --------------------------------- Generate and seed test users projects ---------------------------------
-        // Test user 1 projects
-        $testUser1Projects = Project::factory(2)->create(['project_leader_id' => $testUser1->id]);
-        foreach ($testUser1Projects as $project)
-        {
-            $this->seedProject($project, $testUser1, $otherUsers->toArray());
-        }
-
-
-        $testUser2Projects = Project::factory(2)->create(['project_leader_id' => $testUser2->id]);
-        foreach ($testUser2Projects as $project)
-        {
-            $this->seedProject($project, $testUser2, array_merge($otherUsers->toArray(), [$testUser1, $testUser2]));
-        }
-
-        // --------------------------------- Generate and seed other users projects ---------------------------------
-
-
-        foreach ($otherUsers as $otherUser)
-        {
-            $othProjects = Project::factory(2)->create(['project_leader_id' => $otherUser->id]);
-            foreach ($othProjects as $othProject)
-            {
-                $this->seedProject($othProject, $otherUser, array_merge($otherUsers->toArray(), [$testUser1, $testUser2]));
-            }
-        }
-    }
-
-    public function seedProject($project, $owner, $users)
-    {
-        $nUsrs = random_int(0, 3);
-
-        if($nUsrs < 2) return;
-
-        // Take random n users
-        $userSample = array_diff(
-            array_rand(
-                $users,
-                random_int(2, 4)
-            ),
-            [$owner]
+        // Test user 1
+        /** @var User $professorUser */
+        $professorUser = User::factory()->create(
+            [
+                'name' => 'Professor',
+                'email' => 'professor@mail.com',
+                'approved_at' => now(),
+                'email_verified_at' => now(),
+                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+                'remember_token' => Str::random(10),
+            ]
         );
-
-        foreach ($userSample as $index)
-        {
-            $collaborator = $users[$index];
-
-            // Assign each user to the project as collaborator
-            $project->collaborators()->attach($collaborator['id']);
-
-            // Assign random n tasks to the project for the user
-            Task::factory(random_int(0, 3))->create(
-                [
-                    'user_id' => $collaborator['id'],
-                    'project_id' => $project->id
-                ]
-            );
-        }
+        $professorUser->roles()->attach($professorRole);
     }
 }

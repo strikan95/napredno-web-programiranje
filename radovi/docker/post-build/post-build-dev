@@ -14,7 +14,7 @@ npm install
 
 # Run migrate
 echo "Migrating database"
-php artisan migrate
+php artisan migrate:fresh
 
 # Seed db
 echo "Seeding database"

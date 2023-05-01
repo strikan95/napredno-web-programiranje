@@ -23,6 +23,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'approved_at',
+        'type'
     ];
 
     /**
@@ -44,18 +46,35 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function projects(): HasMany
+    public function getRedirectRoute()
     {
-        return $this->hasMany(Project::class, 'project_leader_id');
+
+        if($this->hasRole('admin'))     return 'admin.dashboard';
+        if($this->hasRole('student'))   return 'student.dashboard';
+        if($this->hasRole('professor')) return 'professor.dashboard';
+
+        return 'user.approval';
     }
 
-    public function collabs(): BelongsToMany
+    public function approve(): void
     {
-        return $this->belongsToMany(Project::class, 'collaborations', 'user_id', 'project_id')->withTimestamps();
+        $this->approved_at = now();
     }
 
-    public function tasks(): HasMany
+    public function isApproved(): bool
     {
-        return $this->hasMany(Task::class, 'user_id');
+        return $this->approved_at !== null;
+    }
+
+    // define connection with roles table
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+// check if user has that $role
+    public function hasRole($role)
+    {
+        return $this->roles->contains('name', $role);
     }
 }
