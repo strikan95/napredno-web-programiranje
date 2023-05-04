@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\HasAssignedTask;
+use App\Http\Middleware\LocalizationMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -36,6 +38,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\LocalizationMiddleware::class
         ],
 
         'api' => [
@@ -68,5 +71,6 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'role' => \App\Http\Middleware\MustHaveRole::class,
         'approved' => \App\Http\Middleware\MustBeApproved::class,
+        'noTask' => \App\Http\Middleware\HasAssignedTask::class
     ];
 }

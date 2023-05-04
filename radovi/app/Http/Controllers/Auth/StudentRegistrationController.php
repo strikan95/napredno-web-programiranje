@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
-use App\Util\StudyType;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,19 +14,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
-class RegisteredUserController extends Controller
+class StudentRegistrationController extends Controller
 {
     /**
      * Display the registration view.
      */
-    public function create(): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
+    public function create(): View
     {
-        return view(
-            'auth.register',
-            [
-                'studyTypes' => StudyType::getStudyTypes()
-            ]
-        );
+        return view('auth.register-student');
     }
 
     /**
@@ -40,24 +34,24 @@ class RegisteredUserController extends Controller
         $request->validate([
             'firstName' => ['required', 'string', 'max:255'],
             'lastName' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'study_type' => ['required'],
             'role' => ['required']
         ]);
 
         $user = User::create([
-            'first_name' => $request->firstName,
-            'last_name' => $request->firstName,
+            'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-
+            'study_type' => $request->study_type,
             'role' => $request->role
         ]);
 
         event(new Registered($user));
 
-        //Auth::login($user);
-        //return redirect(route(auth()->user()->getRedirectRoute()));
-        return redirect(route('welcome'));
+        Auth::login($user);
+
+        return redirect(route(auth()->user()->getRedirectRoute()));
     }
 }

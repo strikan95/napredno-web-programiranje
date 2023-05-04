@@ -9,7 +9,7 @@
                     dark:bg-blue-600 dark:hover:bg-blue-700
                     focus:outline-none
                     dark:focus:ring-blue-800">
-                Login
+                {{ __('public.login') }}
             </a>
 
             <a href="{{ route('register') }}"
@@ -20,7 +20,7 @@
                     dark:bg-blue-600 dark:hover:bg-blue-700
                     focus:outline-none
                     dark:focus:ring-blue-800">
-                Register
+                {{ __('public.register') }}
             </a>
         </div>
     </div>

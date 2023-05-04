@@ -1,11 +1,10 @@
 <?php
-
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Util\Roles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -20,11 +19,13 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'study_type',
         'email',
         'password',
         'approved_at',
-        'type'
+        'role'
     ];
 
     /**
@@ -49,11 +50,11 @@ class User extends Authenticatable
     public function getRedirectRoute()
     {
 
-        if($this->hasRole('admin'))     return 'admin.dashboard';
-        if($this->hasRole('student'))   return 'student.dashboard';
-        if($this->hasRole('professor')) return 'professor.dashboard';
+        if($this->role == Roles::ROLE_ADMIN)     return 'admin.dashboard';
+        if($this->role == Roles::ROLE_PROFESSOR) return 'professor.dashboard';
+        if($this->role == Roles::ROLE_STUDENT)   return 'student.dashboard';
 
-        return 'user.approval';
+        return null;
     }
 
     public function approve(): void
@@ -66,15 +67,28 @@ class User extends Authenticatable
         return $this->approved_at !== null;
     }
 
-    // define connection with roles table
-    public function roles()
+    public function setRole(string $role)
     {
-        return $this->belongsToMany(Role::class);
+        $this->role = $role;
     }
 
-// check if user has that $role
+    // check if user has that $role
     public function hasRole($role)
     {
-        return $this->roles->contains('name', $role);
+        return $this->role == $role;
+    }
+
+    public function submitted(): BelongsToMany
+    {
+        return $this->belongsToMany(Task::class, 'submissions', 'student_id', 'task_id')
+            ->using(Submission::class)
+            ->withTimestamps()
+            ->withPivot('priority')
+            ->orderBy('priority');
+    }
+
+    public function hasTask(): bool
+    {
+        return count(Task::query()->where('student_id', '=', $this->id)->get()) !== 0;
     }
 }
