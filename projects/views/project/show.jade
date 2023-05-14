@@ -1,0 +1,43 @@
+extends ../layout
+
+block content
+    if (project.isArchived === true)
+        h1 Archived Project
+    h2= 'Title: '   + project.title
+    p= 'Description: '      + project.description
+    p= 'Price: '            + project.price
+    p= 'Start Date: '       + project.startDate
+    p= 'End Date: '         + project.endDate
+    ul
+        li
+            a(href='/projects/' + project.id + '/tasks/create') Add Task
+        li
+            a(href='/projects/' + project.id + '/delete') Delete Project
+        if(!project.isArchived)
+            li
+                a(href='/projects/' + project.id + '/collaborators/add') Add Collaborator
+            li
+                a(href='/projects/' + project.id + '/archive') Archive Project
+
+
+    h2 Project tasks
+    ul
+        if(project.tasks.length > 0)
+            each task in project.tasks
+                    li
+                        a(href='/projects/'+project.id+'/tasks/'+task.id+'/edit')= task.text
+        else
+                    li No Tasks
+
+    h2 Project collaborators
+    ul
+        if(project.collaborators.length > 0)
+            each collaboration in project.collaborators
+                if(collaboration.isActive === true)
+                    li= collaboration.user.email
+                        form(method='POST', action='/projects/'+project.id+'/collaborators/'+collaboration.id+'/remove')
+                            input(type='hidden', name='_method', value='POST')
+                            p
+                                input(type='submit', value='Remove user')
+        else
+            li No collaborators

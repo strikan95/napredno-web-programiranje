@@ -1,0 +1,10 @@
+extends ../layout
+
+block content
+    h1= 'Add new collaborator'
+    form(method='POST', action='/projects/'+ projectId +'/collaborators/save')
+        input(type='hidden', name='_method', value='POST')
+        p Email
+            input(type='text', name='email')
+        p
+            input(type='submit', value='Add Collaborator')

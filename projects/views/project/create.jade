@@ -1,0 +1,18 @@
+extends ../layout
+
+block content
+    h1= 'Create new project'
+    form(method='POST', action='/projects/store')
+        input(type='hidden', name='_method', value='POST')
+        p Title
+            input(type='text', name='title')
+        p Description
+            input(type='text', name='description')
+        p Price
+            input(type='number', name='price')
+        p Start Date
+            input(type='date', name='startDate')
+        p End Date
+            input(type='date', name='endDate')
+        p
+            input(type='submit')

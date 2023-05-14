@@ -1,0 +1,10 @@
+extends ../layout
+
+block content
+    h1= 'Add new task'
+    form(method='POST', action='/projects/'+ projectId +'/tasks/store')
+        input(type='hidden', name='_method', value='POST')
+        p Text
+            input(type='text', name='text')
+        p
+            input(type='submit')

@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+    h1= 'Edit Task'
+    form(method='POST', action='/projects/'+ projectId +'/tasks/' + taskId + '/update')
+        input(type='hidden', name='_method', value='POST')
+        p Text
+            input(type='text', name='text')
+        p
+            input(type='submit', value='Save Task')
+    h1= 'Delete Task'
+    form(method='POST', action='/projects/' + projectId + '/tasks/' + taskId + '/delete')
+        input(type='hidden', name='_method', value='POST')
+        p
+            input(type='submit', value='Delete Task')

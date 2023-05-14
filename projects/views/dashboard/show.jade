@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+  h1= user.name + "'s Dashboard"
+  ul
+    li
+      a(href='http://localhost:3000/projects/create') Create new project
+    li
+      a(href='http://localhost:3000/me/projects/leader') View my projects
+    li
+      a(href='http://localhost:3000/me/projects/contribution') View my collaborations
+    li
+      a(href='http://localhost:3000/me/projects/archived') View archive

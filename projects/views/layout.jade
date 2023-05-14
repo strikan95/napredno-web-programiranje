@@ -1,7 +1,20 @@
 doctype html
 html
   head
-    title= title
+    title='Project Management System'
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+    header
+      ul
+      if(user)
+        li
+          a(href='http://localhost:3000/me') Dashboard
+        li
+          a(href='http://localhost:3000/auth/logout') Log out
+      else
+        li
+          a(href='http://localhost:3000/auth/login') Login
+        li
+          a(href='http://localhost:3000/auth/register') Register
+
     block content

@@ -4,8 +4,18 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var session = require('express-session');
+var passport = require('passport');
+const MongoDBStore = require('connect-mongodb-session')(session);
+
+
+var User = require("./model/user");
+
+var db = require('./model/db');
+
+var authRouter = require('./routes/authRouter');
+var dashboardRouter = require('./routes/dashboardRouter');
+var projectsRouter = require('./routes/projectRouter');
 
 var app = express();
 
@@ -19,8 +29,21 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+const store = new MongoDBStore({
+  uri: 'mongodb+srv://db_user:j5JlBRo2SkHoLh1q@napredno-web-programira.dmbnbiw.mongodb.net/?retryWrites=true&w=majority',
+  collection: 'sessions'
+});
+
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false, // don't save session if unmodified
+  saveUninitialized: false, // don't create session until something stored
+  store: store
+}));
+
+app.use('/auth', authRouter);
+app.use('/me', dashboardRouter);
+app.use('/projects', projectsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
